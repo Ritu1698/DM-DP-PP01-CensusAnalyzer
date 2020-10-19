@@ -22,13 +22,10 @@ public class CensusAnalyser {
             Iterable<IndiaCensusCSV> csvIterator = () -> censusCSVIterator;
             int numOfEateries = (int) StreamSupport.stream(csvIterator.spliterator(), false).count();
             return numOfEateries;
-        } catch (IOException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
-        } catch (RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         }
@@ -45,13 +42,10 @@ public class CensusAnalyser {
             Iterable<IndiaCensusCSV> csvIterator = () -> censusCSVIterator;
             int numOfEateries = (int) StreamSupport.stream(csvIterator.spliterator(), false).count();
             return numOfEateries;
-        } catch (IOException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (IllegalStateException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
-        } catch (RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         }
