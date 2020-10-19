@@ -127,4 +127,17 @@ public class CensusAnalyserTest {
         }
     }
 
+    @Test
+    public void givenIndiaStateCodeData_WithWrongFileHeader_ShouldThrowException() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            ExpectedException exceptionRule = ExpectedException.none();
+            exceptionRule.expect(CensusAnalyserException.class);
+            censusAnalyser.loadIndianCodeData(CENSUS_WRONG_CSV_FILE_HEADER);
+        } catch (CensusAnalyserException e) {
+            e.printStackTrace();
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM, e.type);
+        }
+    }
+
 }
