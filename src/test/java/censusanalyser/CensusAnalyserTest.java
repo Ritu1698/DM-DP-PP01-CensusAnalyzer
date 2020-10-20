@@ -10,7 +10,7 @@ public class CensusAnalyserTest {
     private static final String CENSUS_WRONG_CSV_FILE_PATH = "./src/main/resources/IndiaStateCensusData.csv";
     private static final String CENSUS_WRONG_CSV_FILE_EXTENSION = "./src/test/resources/IndiaStateCensusData.bin";
     private static final String WRONG_CSV_FILE_DELIMITER = "./src/test/resources/WrongDelimiter.csv";
-    private static final String CENSUS_WRONG_CSV_FILE_HEADER = "./src/test/resources/IPL2019FactsheetMostRuns.csv";
+    private static final String CENSUS_WRONG_CSV_FILE_HEADER = "./src/test/resources/WrongFileHeader.csv";
     private static final String INDIAN_STATE_CODE_CSV_FILE = "./src/test/resources/IndianStateCode.csv";
     private static final String CODE_WRONG_CSV_FILE_PATH = "./src/main/resources/IndiaStateCode.csv";
     private static final String CODE_WRONG_CSV_FILE_EXTENSION = "./src/test/resources/IndianStateCode.bin";
