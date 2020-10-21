@@ -167,4 +167,16 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CSVException.ExceptionType.CSV_FILE_PROBLEM, e.type);
         }
     }
+
+    @Test
+    public void givenIndianCensusCSVFile_whenCorrectAndUsingCommonsCSV_returnsCorrectRecords() {
+        try {
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            int numOfRecords = censusAnalyser.loadIndiaCensusDataCommonsCSV(INDIA_CENSUS_CSV_FILE_PATH);
+            Assert.assertEquals(29, numOfRecords);
+        } catch (CSVException e) {
+            e.printStackTrace();
+            Assert.assertEquals(CSVException.ExceptionType.CSV_FILE_PROBLEM, e.type);
+        }
+    }
 }
