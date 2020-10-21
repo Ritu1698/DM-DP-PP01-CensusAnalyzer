@@ -1,5 +1,6 @@
 package censusanalyser;
 
+import com.bridgelabz.csvbuilder.CSVException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
