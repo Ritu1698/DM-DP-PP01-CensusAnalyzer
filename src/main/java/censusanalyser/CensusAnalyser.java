@@ -20,56 +20,58 @@ import java.util.stream.StreamSupport;
 
 public class CensusAnalyser {
     List<IndiaCensusCSV> censusCSVList = null;
-    public static final  String SORTED_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/SortedIndiaStateCensusDataJsonFormat.json";
+    List<IndiaStateCodeCSV> stateCSVList = null;
+
+    public static final String SORTED_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/SortedIndiaStateCensusDataJsonFormat.json";
+    public static final String SORTED_INDIAN_STATE_CODE_DATA_JSON = "./src/test/resources/SortedIndiaStateCodeDataJsonFormat.json";
+
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         checkFilePath(csvFilePath);
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
             censusCSVList = CSVFactoryBuilder.createCSVBuilder().getCSVList(reader, IndiaCensusCSV.class);
             return censusCSVList.size();
-        } catch (IOException e) {
+        } catch (IOException | CSVException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
-        } catch (CSVException e) {
-            throw new CensusAnalyserException(e.getMessage(), e.type.name());
         }
     }
+
     public int loadIndianCodeData(String csvFilePath) throws CensusAnalyserException {
         checkFilePath(csvFilePath);
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
-            censusCSVList = CSVFactoryBuilder.createCSVBuilder().getCSVList(reader, IndiaCensusCSV.class);
-            return censusCSVList.size();
-        } catch (IOException e) {
+            stateCSVList = CSVFactoryBuilder.createCSVBuilder().getCSVList(reader, IndiaStateCodeCSV.class);
+            return stateCSVList.size();
+        } catch (IOException | CSVException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
-        } catch (CSVException e) {
-            throw new CensusAnalyserException(e.getMessage(), e.type.name());
         }
 
     }
+
     public int loadIndiaCensusDataCommonsCSV(String csvFilePath) throws CensusAnalyserException {
         checkFilePath(csvFilePath);
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
             List censusCSVCommonsList = CSVFactoryBuilder.createCommonsCSVBuilder().getCSVList(reader, IndiaCensusCSV.class);
             return censusCSVCommonsList.size();
-        } catch (IOException e) {
+        } catch (IOException | CSVException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
-        } catch (CSVException e) {
-            throw new CensusAnalyserException(e.getMessage(), e.type.name());
         }
     }
+
     public void checkFilePath(String csvFilePath) throws CensusAnalyserException {
         Pattern patternForCSV = Pattern.compile(".+[.csv]");
         if (!patternForCSV.matcher(csvFilePath).matches())
             throw new CensusAnalyserException("Wrong File",
                     CensusAnalyserException.ExceptionType.FILE_TYPE_PROBLEM);
     }
+
     public String getStateWiseSortedCensusData() throws CensusAnalyserException {
         try (Writer writer = new FileWriter(SORTED_INDIAN_STATE_CENSUS_DATA_JSON)) {
             if (censusCSVList == null || censusCSVList.size() == 0) {
@@ -87,6 +89,7 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
         }
     }
+
     public void sort(Comparator<IndiaCensusCSV> censusComparator) {
         int listSize = censusCSVList.size();
         IntStream.range(0, listSize - 1).flatMap(i -> IntStream.range(1, listSize - i)).forEach(j -> {
@@ -97,5 +100,36 @@ public class CensusAnalyser {
                 censusCSVList.set(j, census1);
             }
         });
+    }
+
+    public String getStateCodeWiseSortedCensusData() throws CensusAnalyserException {
+        try (Writer writer1 = new FileWriter(SORTED_INDIAN_STATE_CODE_DATA_JSON)) {
+            if (stateCSVList== null || stateCSVList.size() == 0) {
+                throw new CensusAnalyserException("No data", CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+            }
+            Comparator<IndiaStateCodeCSV> censusComparator = Comparator.comparing(state -> state.stateCode);
+            this.sortState(censusComparator);
+            String json = new Gson().toJson(stateCSVList);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(stateCSVList, writer1);
+            return json;
+
+        } catch (RuntimeException | IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
+        }
+    }
+
+    public void sortState(Comparator<IndiaStateCodeCSV> censusComparator) {
+        for (int i = 0; i < stateCSVList.size() - 1; i++) {
+            for (int j = 0; j < stateCSVList.size() - i - 1; j++) {
+                IndiaStateCodeCSV code1 = stateCSVList.get(j);
+                IndiaStateCodeCSV code2 = stateCSVList.get(j + 1);
+                if (censusComparator.compare(code1, code2) > 0) {
+                    stateCSVList.set(j, code2);
+                    stateCSVList.set(j + 1, code1);
+                }
+            }
+        }
     }
 }
