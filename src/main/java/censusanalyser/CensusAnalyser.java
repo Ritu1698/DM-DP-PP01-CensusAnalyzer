@@ -172,7 +172,7 @@ public class CensusAnalyser {
             Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.densityPerSqKm);
             this.sorter(censusComparator);
             String json = new Gson().toJson(censusCSVList);
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(censusCSVList, writer);
             return json;
 
@@ -190,7 +190,7 @@ public class CensusAnalyser {
             Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.areaInSqKm);
             this.sorter(censusComparator);
             String json = new Gson().toJson(censusCSVList);
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(censusCSVList, writer);
             return json;
 
@@ -199,7 +199,5 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
         }
     }
-
-
 
 }
