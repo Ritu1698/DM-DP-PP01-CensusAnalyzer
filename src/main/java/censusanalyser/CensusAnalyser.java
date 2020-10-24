@@ -22,6 +22,7 @@ public class CensusAnalyser {
     public static final String SORTED_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/SortedIndiaStateCensusDataJsonFormat.json";
     public static final String SORTED_INDIAN_STATE_CODE_DATA_JSON = "./src/test/resources/SortedIndiaStateCodeDataJsonFormat.json";
     public static final String SORTED_ON_POPULATION_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/IndiaStatePopulationDataJson.json";
+    public static final String SORTED_ON_DENSITY_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/IndiaStatePopulationDensityDataJson.json";
 
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         checkFilePath(csvFilePath);
@@ -137,9 +138,9 @@ public class CensusAnalyser {
                 throw new CensusAnalyserException("No data", CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
             }
             Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.population);
-            this.sortPopulation(censusComparator);
+            this.sorter(censusComparator);
             String json = new Gson().toJson(censusCSVList);
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(censusCSVList, writer);
             return json;
 
@@ -149,7 +150,7 @@ public class CensusAnalyser {
         }
     }
 
-    public void sortPopulation(Comparator<IndiaCensusCSV> censusComparator) {
+    public void sorter(Comparator<IndiaCensusCSV> censusComparator) {
         for (int i = 0; i < censusCSVList.size() - 1; i++) {
             for (int j = 0; j < censusCSVList.size() - i - 1; j++) {
                 IndiaCensusCSV census1 = censusCSVList.get(j);
@@ -159,6 +160,24 @@ public class CensusAnalyser {
                     censusCSVList.set(j + 1, census1);
                 }
             }
+        }
+    }
+
+    public String getPopulationDensityWiseSortedCensusData() throws CensusAnalyserException {
+        try (Writer writer = new FileWriter(SORTED_ON_DENSITY_INDIAN_STATE_CENSUS_DATA_JSON)) {
+            if (censusCSVList == null || censusCSVList.size() == 0) {
+                throw new CensusAnalyserException("No data", CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+            }
+            Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.densityPerSqKm);
+            this.sorter(censusComparator);
+            String json = new Gson().toJson(censusCSVList);
+            Gson gson = new GsonBuilder().create();
+            gson.toJson(censusCSVList, writer);
+            return json;
+
+        } catch (RuntimeException | IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
         }
     }
 
