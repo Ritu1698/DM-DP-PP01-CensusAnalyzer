@@ -12,7 +12,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/eclipse-workspace/CSVBuilder/out/artifacts/CSVBuilder_main_jar/csv.CSVBuilder.jar!/" />
+          <root url="jar://$USER_HOME$/eclipse-workspace/CSVBuilder/out/artifacts/CSVBuilder_main_jar/CSVBuilder.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -20,6 +20,7 @@
     </orderEntry>
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.2.4" level="project" />
     <orderEntry type="library" name="Gradle: com.opencsv:opencsv:4.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-csv:1.8" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-text:1.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.6" level="project" />
     <orderEntry type="library" name="Gradle: commons-beanutils:commons-beanutils:1.9.3" level="project" />
