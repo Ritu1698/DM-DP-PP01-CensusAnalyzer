@@ -22,7 +22,8 @@ public class CensusAnalyser {
     public static final String SORTED_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/SortedIndiaStateCensusDataJsonFormat.json";
     public static final String SORTED_INDIAN_STATE_CODE_DATA_JSON = "./src/test/resources/SortedIndiaStateCodeDataJsonFormat.json";
     public static final String SORTED_ON_POPULATION_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/IndiaStatePopulationDataJson.json";
-    public static final String SORTED_ON_DENSITY_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/IndiaStatePopulationDensityDataJson.json";
+    public static final String SORTED_ON_DENSITY_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/IndiaStateDensityDataJson.json";
+    ;public static final String SORTED_ON_AREA_INDIAN_STATE_CENSUS_DATA_JSON = "./src/test/resources/IndiaStateAreaDataJson.json";
 
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         checkFilePath(csvFilePath);
@@ -180,5 +181,25 @@ public class CensusAnalyser {
                     CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
         }
     }
+
+    public String getAreaWiseSortedCensusData() throws CensusAnalyserException {
+        try (Writer writer = new FileWriter(SORTED_ON_AREA_INDIAN_STATE_CENSUS_DATA_JSON)) {
+            if (censusCSVList == null || censusCSVList.size() == 0) {
+                throw new CensusAnalyserException("No data", CensusAnalyserException.ExceptionType.UNABLE_TO_PARSE);
+            }
+            Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.areaInSqKm);
+            this.sorter(censusComparator);
+            String json = new Gson().toJson(censusCSVList);
+            Gson gson = new GsonBuilder().create();
+            gson.toJson(censusCSVList, writer);
+            return json;
+
+        } catch (RuntimeException | IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.HEADER_DELIMITER_PROBLEM);
+        }
+    }
+
+
 
 }
